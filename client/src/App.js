@@ -1,31 +1,29 @@
-// import './App.css';
-import { useState, useEffect } from "react";
-import { BrowserRouter as Router } from "react-router-dom";
-import LoggedIn from "./LoggedIn";
-import LoggedOut from "./LoggedOut";
+import './App.css';
+import React, { useState, useEffect } from "react";
+import Post from './Post';
 
-const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+function App() {
+  const [allPosts, setAllPosts] = useState([]);
 
-  useEffect(() => {
-    fetch("/me").then((res) => {
-      if (res.ok) {
-        res.json().then((user) => {
-          setCurrentUser(user);
-          setIsAuthenticated(true);
-        });
-      }
-    });
-  }, []);
+  useEffect( () => {
+    fetch('/posts')
+    .then(r => r.json())
+    .then( (fetchedPosts) => {
+      setAllPosts(fetchedPosts)
+   }) 
+  }, [] )
 
-  if (isAuthenticated) {
-    return <div></div>;
-  }
+  console.log(allPosts)
+
   return (
-    <div className="app">
-    <h1>Welcome to Marketplace!</h1>
-      <Router>{currentUser ? <LoggedIn /> : <LoggedOut />}</Router>
+    <div>
+      {allPosts.map((eachPost) => {
+        return(
+          <Post 
+          postInfo = {eachPost}
+          key = {eachPost.id} />
+        )
+      })}
     </div>
   );
 };
